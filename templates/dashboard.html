@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Education News Bot Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📢 Education News Monitor</h1>
+            <p>शैक्षणिक नोटिसा आणि अपडेट्स एकाच जागी | <span id="last-check"></span></p>
+            <button onclick="forceCheck()" class="refresh-btn">🔄 आत्ता Check करा</button>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="total-updates">0</div>
+                <div class="stat-label">एकूण Updates</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="website-count">4</div>
+                <div class="stat-label">Websites Monitored</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">🤖</div>
+                <div class="stat-label">Active Bot</div>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-container">
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="showTab('cet')" id="tab-cet-btn">
+                    <span class="tab-icon">🎓</span> CET Cell Maharashtra
+                    <span class="tab-count" id="cet-count">0</span>
+                </button>
+                <button class="tab-btn" onclick="showTab('neet')" id="tab-neet-btn">
+                    <span class="tab-icon">🩺</span> NEET UG Maharashtra
+                    <span class="tab-count" id="neet-count">0</span>
+                </button>
+                <button class="tab-btn" onclick="showTab('nmc')" id="tab-nmc-btn">
+                    <span class="tab-icon">🏛️</span> NMC India
+                    <span class="tab-count" id="nmc-count">0</span>
+                </button>
+                <button class="tab-btn" onclick="showTab('nta')" id="tab-nta-btn">
+                    <span class="tab-icon">📝</span> NTA India
+                    <span class="tab-count" id="nta-count">0</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- CET Cell Tab Content -->
+        <div id="cet-tab" class="tab-content active">
+            <div class="updates-container">
+                <h2>📰 CET Cell - नवीनतम Updates</h2>
+                <div id="cet-updates-list">
+                    <div class="empty-state">
+                        <p>✨ अद्याप कोणतीही नवीन बातमी नाही</p>
+                        <p>नवीन update आली की इथे दिसेल</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEET Tab Content -->
+        <div id="neet-tab" class="tab-content">
+            <div class="updates-container">
+                <h2>📰 NEET UG - नवीनतम Updates</h2>
+                <div id="neet-updates-list">
+                    <div class="empty-state">
+                        <p>✨ अद्याप कोणतीही नवीन बातमी नाही</p>
+                        <p>नवीन update आली की इथे दिसेल</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NMC Tab Content -->
+        <div id="nmc-tab" class="tab-content">
+            <div class="updates-container">
+                <h2>📰 NMC India - नवीनतम Updates</h2>
+                <div id="nmc-updates-list">
+                    <div class="empty-state">
+                        <p>✨ अद्याप कोणतीही नवीन बातमी नाही</p>
+                        <p>नवीन update आली की इथे दिसेल</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NTA Tab Content -->
+        <div id="nta-tab" class="tab-content">
+            <div class="updates-container">
+                <h2>📰 NTA India - नवीनतम Updates</h2>
+                <div id="nta-updates-list">
+                    <div class="empty-state">
+                        <p>✨ अद्याप कोणतीही नवीन बातमी नाही</p>
+                        <p>नवीन update आली की इथे दिसेल</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monitoring Container -->
+        <div class="monitoring-container">
+            <h2>🔍 Websites Monitor केल्या जात आहेत</h2>
+            <div class="websites-grid">
+                <div class="website-card">
+                    <span class="website-icon">🎓</span>
+                    <span class="website-name">CET Cell Maharashtra</span>
+                    <span class="website-status">🟢 Active</span>
+                </div>
+                <div class="website-card">
+                    <span class="website-icon">🩺</span>
+                    <span class="website-name">NEET UG Maharashtra</span>
+                    <span class="website-status">🟢 Active</span>
+                </div>
+                <div class="website-card">
+                    <span class="website-icon">🏛️</span>
+                    <span class="website-name">NMC India</span>
+                    <span class="website-status">🟢 Active</span>
+                </div>
+                <div class="website-card">
+                    <span class="website-icon">📝</span>
+                    <span class="website-name">NTA India</span>
+                    <span class="website-status">🟢 Active</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Tab Styling */
+        .tab-container {
+            margin-bottom: 25px;
+        }
+        
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            flex-wrap: wrap;
+        }
+        
+        .tab-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #333;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .tab-icon {
+            font-size: 16px;
+        }
+        
+        .tab-count {
+            background: rgba(0,0,0,0.1);
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+            margin-left: 5px;
+            font-weight: bold;
+        }
+        
+        .tab-btn.active .tab-count {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Update Cards */
+        .update-card {
+            display: flex;
+            gap: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: white;
+            border-radius: 12px;
+            transition: all 0.3s;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .update-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+        
+        .update-icon {
+            font-size: 2rem;
+            min-width: 50px;
+        }
+        
+        .update-content {
+            flex: 1;
+        }
+        
+        .update-site {
+            font-size: 0.8rem;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .update-title a {
+            font-size: 0.95rem;
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+            display: block;
+            margin-bottom: 5px;
+            line-height: 1.4;
+        }
+        
+        .update-title a:hover {
+            color: #667eea;
+            text-decoration: underline;
+        }
+        
+        .update-time {
+            font-size: 0.7rem;
+            color: #999;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #999;
+        }
+        
+        .empty-state p:first-child {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .tab-buttons {
+                flex-direction: column;
+            }
+            
+            .tab-btn {
+                justify-content: flex-start;
+            }
+            
+            .update-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .update-icon {
+                margin: 0 auto;
+            }
+        }
+    </style>
+
+    <script>
+        let allUpdates = [];
+        
+        function refreshUpdates() {
+            fetch('/api/updates')
+                .then(response => response.json())
+                .then(data => {
+                    allUpdates = data.updates || [];
+                    updateDisplay();
+                    if (data.last_check) {
+                        document.getElementById('last-check').textContent = `शेवटची Check: ${data.last_check}`;
+                    }
+                    if (data.total_websites) {
+                        document.getElementById('website-count').textContent = data.total_websites;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+        
+        function updateDisplay() {
+            // Separate updates by site
+            const cetUpdates = allUpdates.filter(u => u.site && u.site.includes('CET'));
+            const neetUpdates = allUpdates.filter(u => u.site && u.site.includes('NEET'));
+            const nmcUpdates = allUpdates.filter(u => u.site && u.site.includes('NMC'));
+            const ntaUpdates = allUpdates.filter(u => u.site && u.site.includes('NTA'));
+            
+            // Update counts
+            document.getElementById('cet-count').textContent = cetUpdates.length;
+            document.getElementById('neet-count').textContent = neetUpdates.length;
+            document.getElementById('nmc-count').textContent = nmcUpdates.length;
+            document.getElementById('nta-count').textContent = ntaUpdates.length;
+            document.getElementById('total-updates').textContent = allUpdates.length;
+            
+            // Render updates
+            renderUpdates('cet-updates-list', cetUpdates, '🎓');
+            renderUpdates('neet-updates-list', neetUpdates, '🩺');
+            renderUpdates('nmc-updates-list', nmcUpdates, '🏛️');
+            renderUpdates('nta-updates-list', ntaUpdates, '📝');
+        }
+        
+        function renderUpdates(containerId, updates, defaultIcon) {
+            const container = document.getElementById(containerId);
+            
+            if (updates && updates.length > 0) {
+                let html = '';
+                updates.forEach(update => {
+                    // Limit title length for display
+                    let title = update.title;
+                    if (title && title.length > 150) {
+                        title = title.substring(0, 150) + '...';
+                    }
+                    html += `
+                        <div class="update-card">
+                            <div class="update-icon">${update.icon || defaultIcon}</div>
+                            <div class="update-content">
+                                <div class="update-site">${escapeHtml(update.site || 'Unknown')}</div>
+                                <div class="update-title">
+                                    <a href="${update.link}" target="_blank">${escapeHtml(title)}</a>
+                                </div>
+                                <div class="update-time">🕐 ${update.timestamp || update.pub_date || ''}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <p>✨ अद्याप कोणतीही नवीन बातमी नाही</p>
+                        <p>नवीन update आली की इथे दिसेल</p>
+                        <p>🔄 "आत्ता Check करा" बटण वापरून बघा</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            const selectedTab = document.getElementById(`${tabName}-tab`);
+            if (selectedTab) {
+                selectedTab.classList.add('active');
+            }
+            
+            // Add active class to selected button
+            const selectedBtn = document.getElementById(`tab-${tabName}-btn`);
+            if (selectedBtn) {
+                selectedBtn.classList.add('active');
+            }
+        }
+        
+        function forceCheck() {
+            const btn = document.querySelector('.refresh-btn');
+            const originalText = btn.textContent;
+            btn.textContent = '⏳ Check करत आहे...';
+            btn.disabled = true;
+            
+            fetch('/api/check-now')
+                .then(response => response.json())
+                .then(data => {
+                    btn.textContent = `✅ ${data.new_count} नवीन बातम्या सापडल्या!`;
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                        btn.disabled = false;
+                    }, 3000);
+                    refreshUpdates();
+                })
+                .catch(() => {
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                    alert('Error: Check करता आले नाही. Internet connection तपासा.');
+                });
+        }
+        
+        // Auto refresh every 60 seconds
+        setInterval(refreshUpdates, 60000);
+        
+        // Initial load
+        refreshUpdates();
+    </script>
+</body>
+</html>
