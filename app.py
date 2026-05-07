@@ -8,7 +8,7 @@ import requests
 
 # ================== 🔴 येथे तुझा Telegram Bot Token आणि Chat ID लिहा 🔴 ==================
 TELEGRAM_BOT_TOKEN = "8581753072:AAF-p6R6TLgkNI5B19ZGXzWwW5LOJ9UgWPw"   # उदा: "789456123:ABCdefGHIjklm..."
-TELEGRAM_CHAT_IDS = ["2035322636", "536815190"]  # ====================================================================================
+TELEGRAM_CHAT_IDS = ["2035322636", "536815190","2117182784"]  # ====================================================================================
 
 # Import fetchers
 from cet_cell_fetcher import fetch_cet_cell_notices
@@ -69,25 +69,29 @@ def send_telegram_message(message):
     """Telegram ला मेसेज पाठवते"""
     if TELEGRAM_BOT_TOKEN == "YOUR_BOT_TOKEN_HERE":
         return False
-    
+
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
-    payload = {
-        "chat_id": TELEGRAM_CHAT_ID,
-        "text": message,
-        "parse_mode": "HTML"
-    }
-    
-    try:
-        response = requests.post(url, json=payload, timeout=10)
-        if response.status_code == 200:
-            print("    📨 Telegram मेसेज पाठवला!")
-            return True
-        else:
-            print(f"    ❌ Telegram Error: {response.text}")
-            return False
-    except Exception as e:
-        print(f"    ❌ Telegram Exception: {e}")
-        return False
+
+    success_count = 0
+
+    for chat_id in TELEGRAM_CHAT_IDS:
+        payload = {
+            "chat_id": chat_id,
+            "text": message,
+            "parse_mode": "HTML"
+        }
+
+        try:
+            response = requests.post(url, json=payload, timeout=10)
+            if response.status_code == 200:
+                print(f"    📨 Telegram sent to {chat_id}")
+                success_count += 1
+            else:
+                print(f"    ❌ Telegram Error ({chat_id}): {response.text}")
+        except Exception as e:
+            print(f"    ❌ Telegram Exception ({chat_id}): {e}")
+
+    return success_count > 0
 
 def format_telegram_message(update):
     """Telegram साठी मेसेज फॉरमॅट करते"""
