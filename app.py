@@ -8,8 +8,7 @@ import requests
 
 # ================== 🔴 येथे तुझा Telegram Bot Token आणि Chat ID लिहा 🔴 ==================
 TELEGRAM_BOT_TOKEN = "8581753072:AAF-p6R6TLgkNI5B19ZGXzWwW5LOJ9UgWPw"   # उदा: "789456123:ABCdefGHIjklm..."
-TELEGRAM_CHAT_ID = "2035322636"       # उदा: "123456789"
-# ====================================================================================
+TELEGRAM_CHAT_IDS = ["2035322636", "536815190"]  # ====================================================================================
 
 # Import fetchers
 from cet_cell_fetcher import fetch_cet_cell_notices
