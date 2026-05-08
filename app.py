@@ -6,9 +6,9 @@ from flask import Flask, render_template, jsonify
 from apscheduler.schedulers.background import BackgroundScheduler
 import requests
 
-# ================== 🔴 येथे तुझा Telegram Bot Token आणि Chat ID लिहा 🔴 ==================
-TELEGRAM_BOT_TOKEN = "8581753072:AAF-p6R6TLgkNI5B19ZGXzWwW5LOJ9UgWPw"   # उदा: "789456123:ABCdefGHIjklm..."
-TELEGRAM_CHAT_IDS = ["2035322636", "536815190","2117182784"]  # ====================================================================================
+# ================== 🔴 तुझा Telegram Bot Token आणि Chat ID 🔴 ==================
+TELEGRAM_BOT_TOKEN = "8581753072:AAF-p6R6TLgkNI5B19ZGXzWwW5LOJ9UgWPw"
+TELEGRAM_CHAT_IDS = ["2035322636", "536815190","2117182784"]
 
 # Import fetchers
 from cet_cell_fetcher import fetch_cet_cell_notices
@@ -17,6 +17,7 @@ from nmc_fetcher import fetch_nmc_notices
 from nta_fetcher import fetch_nta_notices
 from pib_fetcher import fetch_pib_notices
 from education_fetcher import fetch_education_notices
+from mahahssc_fetcher import fetch_mahahssc_notices   # ✅ New import
 
 app = Flask(__name__)
 
@@ -61,6 +62,13 @@ WEBSITES = [
         "icon": "📖",
         "type": "custom",
         "custom_function": fetch_education_notices
+    },
+    {   # ✅ New website added
+        "name": "📚 Maharashtra HSC Board",
+        "icon": "📚",
+        "type": "custom",
+        "url": "https://mahahsscboard.in/mr",
+        "custom_function": fetch_mahahssc_notices
     }
 ]
 
@@ -115,15 +123,13 @@ def load_sent_hashes():
     try:
         with open(SENT_HASHES_FILE, "r", encoding="utf-8") as f:
             content = f.read().strip()
-            if not content:  # Empty file
+            if not content:
                 print("  ⚠️ sent_hashes.json is empty, creating new")
                 return set()
             data = json.loads(content)
             return set(data) if isinstance(data, list) else set()
     except json.JSONDecodeError as e:
         print(f"  ⚠️ sent_hashes.json is corrupt: {e}")
-        print(f"  ⚠️ Creating backup and new file")
-        # Backup corrupt file
         if os.path.exists(SENT_HASHES_FILE):
             backup_file = f"{SENT_HASHES_FILE}.corrupt_backup"
             try:
@@ -224,16 +230,13 @@ if __name__ == "__main__":
     print("⏰ Updates दर 5 मिनिटांनी check होतील")
     print(f"📊 Websites: {len(WEBSITES)}")
     
-    # Telegram Bot status
     if TELEGRAM_BOT_TOKEN != "YOUR_BOT_TOKEN_HERE":
         print("🤖 Telegram Bot: ✅ सक्रिय")
-        # Test message
         send_telegram_message("✅ *Education News Bot सुरू झाला आहे!*\n\nनवीन शैक्षणिक सूचना आल्या की तुम्हाला येथे notification मिळेल.")
     else:
         print("🤖 Telegram Bot: ⚠️ निष्क्रिय (Token set नाही)")
     print("=" * 60)
     
-    # पहिल्यांदा check करा
     check_all_sites()
     
     app.run(debug=False, host='0.0.0.0', port=5000)
