@@ -5,7 +5,7 @@ import re
 
 def fetch_neet_notices():
     """NEET UG Maharashtra मधून फक्त REAL Notices काढण्यासाठी"""
-    url = "https://medicalug2025.mahacet.org/NEET-UG-2025/login"
+    url = "https://neet.nta.nic.in/"
     news_list = []
     seen_titles = set()
     
